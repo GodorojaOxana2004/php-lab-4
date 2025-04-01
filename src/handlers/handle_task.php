@@ -5,11 +5,13 @@
 
 require_once __DIR__ . '/../helpers.php';
 
+$errors = [];
+
 $title = filter_input(INPUT_POST, 'title', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 $category = filter_input(INPUT_POST, 'category', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 $description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 $tags = filter_input(INPUT_POST, 'tags', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY) ?? [];
-$steps = filter_input(INPUT_POST, 'steps', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+$steps = filter_input(INPUT_POST, 'steps', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY) ?? [];
 
 // Валидация
 if (empty($title)) {
@@ -28,7 +30,7 @@ if (empty($errors)) {
         'category' => $category,
         'description' => $description,
         'tags' => $tags,
-        'steps' => $steps,
+        'steps' => array_filter($steps, function($step) { return trim($step) !== ''; }), // Убираем пустые шаги
         'created_at' => date('Y-m-d H:i:s')
     ];
     
@@ -36,7 +38,9 @@ if (empty($errors)) {
     if (!file_exists(dirname($tasksFile))) {
         mkdir(dirname($tasksFile), 0777, true);
     }
-    file_put_contents($tasksFile, json_encode($task) . PHP_EOL, FILE_APPEND | LOCK_EX); // Добавляем блокировку
-    header('Location: ../../index.php'); // Исправлен путь перенаправления
+    file_put_contents($tasksFile, json_encode($task) . PHP_EOL, FILE_APPEND | LOCK_EX);
+    header('Location: ../index.php'); // Исправлен путь с учетом структуры
     exit;
 }
+
+// Если есть ошибки, они будут доступны в create.php

@@ -34,7 +34,16 @@ $latestTasks = array_slice($tasks, -2);
             <p>Категория: <?= htmlspecialchars($task['category'] ?? 'Не указана') ?></p>
             <p><?= htmlspecialchars($task['description'] ?? 'Нет описания') ?></p>
             <p>Тэги: <?= implode(', ', array_map('htmlspecialchars', $task['tags'] ?? [])) ?></p>
-            <p>Шаги: <?= nl2br(htmlspecialchars($task['steps'] ?? 'Нет шагов')) ?></p>
+            <p>Шаги:</p>
+            <?php if (!empty($task['steps']) && is_array($task['steps'])): ?>
+                <ul>
+                    <?php foreach ($task['steps'] as $step): ?>
+                        <li><?= htmlspecialchars($step) ?></li>
+                    <?php endforeach; ?>
+                </ul>
+            <?php else: ?>
+                <p>Нет шагов</p>
+            <?php endif; ?>
             <hr>
         <?php endforeach; ?>
     <?php endif; ?>

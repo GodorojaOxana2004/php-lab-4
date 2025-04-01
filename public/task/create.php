@@ -12,6 +12,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <title>Добавить задачу</title>
+    <style>
+        .step-container { 
+            margin: 10px 0; 
+            display: flex; 
+            align-items: center; 
+        }
+        .step-container textarea { 
+            width: 100%; 
+            margin-right: 10px; 
+        }
+        .remove-step { 
+            color: red; 
+            cursor: pointer; 
+            font-size: 18px; 
+        }
+    </style>
 </head>
 <body>
     <nav>
@@ -48,11 +64,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <option value="сложно" <?= isSelected('tags', 'сложно', true) ?>>Сложно</option>
             </select>
         </div>
+        
         <div>
             <label>Шаги выполнения:</label><br>
-            <textarea name="steps"><?= getFormValue('steps') ?></textarea>
+            <div id="steps-container">
+                <?php
+                $steps = getFormValue('steps');
+                if ($steps) {
+                    $steps_array = is_array($steps) ? $steps : explode("\n", $steps);
+                    foreach ($steps_array as $index => $step) {
+                        if (trim($step) !== '') {
+                            echo '<div class="step-container">';
+                            echo '<textarea name="steps[]" rows="2">' . htmlspecialchars(trim($step)) . '</textarea>';
+                            echo '<span class="remove-step">Убрать</span>';
+                            echo '</div>';
+                        }
+                    }
+                } else {
+                    echo '<div class="step-container">';
+                    echo '<textarea name="steps[]" rows="2"></textarea>';
+                    echo '<span class="remove-step">Убрать</span>';
+                    echo '</div>';
+                }
+                ?>
+            </div>
+            <button type="button" id="add-step-btn">Добавить шаг</button>
         </div>
+
         <button type="submit">Отправить</button>
     </form>
+
+    <script src="../js/script.js"></script>
 </body>
 </html>
