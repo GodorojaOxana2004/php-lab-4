@@ -13,20 +13,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <title>Добавить задачу</title>
     <style>
-        .step-container { 
-            margin: 10px 0; 
-            display: flex; 
-            align-items: center; 
-        }
-        .step-container textarea { 
-            width: 100%; 
-            margin-right: 10px; 
-        }
-        .remove-step { 
-            color: red; 
-            cursor: pointer; 
-            font-size: 18px; 
-        }
+        .step { margin: 10px 0; display: flex; }
+        .step textarea { width: 80%; margin-right: 10px; }
+        .remove-step { color: red; cursor: pointer; }
+        .error { color: red; }
     </style>
 </head>
 <body>
@@ -36,12 +26,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <a href="create.php">Добавить задачу</a>
     </nav>
     <h1>Добавить задачу</h1>
-    <form method="POST" action="">
+
+    <form method="POST">
         <div>
-            <label>Название задачи:</label><br>
+            <label>Название:</label><br>
             <input type="text" name="title" value="<?= getFormValue('title') ?>">
-            <?php if (isset($errors['title'])): ?><p style="color:red"><?= $errors['title'] ?></p><?php endif; ?>
+            <?php if (isset($errors['title'])): ?>
+                <p class="error"><?= $errors['title'] ?></p>
+            <?php endif; ?>
         </div>
+
         <div>
             <label>Категория:</label><br>
             <select name="category">
@@ -49,13 +43,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <option value="личное" <?= isSelected('category', 'личное') ?>>Личное</option>
                 <option value="срочное" <?= isSelected('category', 'срочное') ?>>Срочное</option>
             </select>
-            <?php if (isset($errors['category'])): ?><p style="color:red"><?= $errors['category'] ?></p><?php endif; ?>
+            <?php if (isset($errors['category'])): ?>
+                <p class="error"><?= $errors['category'] ?></p>
+            <?php endif; ?>
         </div>
+
         <div>
             <label>Описание:</label><br>
             <textarea name="description"><?= getFormValue('description') ?></textarea>
-            <?php if (isset($errors['description'])): ?><p style="color:red"><?= $errors['description'] ?></p><?php endif; ?>
+            <?php if (isset($errors['description'])): ?>
+                <p class="error"><?= $errors['description'] ?></p>
+            <?php endif; ?>
         </div>
+
         <div>
             <label>Тэги:</label><br>
             <select name="tags[]" multiple>
@@ -64,34 +64,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <option value="сложно" <?= isSelected('tags', 'сложно', true) ?>>Сложно</option>
             </select>
         </div>
-        
+
         <div>
-            <label>Шаги выполнения:</label><br>
-            <div id="steps-container">
-                <?php
-                $steps = getFormValue('steps');
-                if ($steps) {
-                    $steps_array = is_array($steps) ? $steps : explode("\n", $steps);
-                    foreach ($steps_array as $index => $step) {
-                        if (trim($step) !== '') {
-                            echo '<div class="step-container">';
-                            echo '<textarea name="steps[]" rows="2">' . htmlspecialchars(trim($step)) . '</textarea>';
-                            echo '<span class="remove-step">Убрать</span>';
-                            echo '</div>';
-                        }
-                    }
-                } else {
-                    echo '<div class="step-container">';
-                    echo '<textarea name="steps[]" rows="2"></textarea>';
-                    echo '<span class="remove-step">Убрать</span>';
-                    echo '</div>';
-                }
-                ?>
+            <label>Шаги:</label><br>
+            <div id="steps">
+                <div class="step">
+                    <textarea name="steps[]" rows="2"></textarea>
+                    <span class="remove-step">Удалить</span>
+                </div>
             </div>
-            <button type="button" id="add-step-btn">Добавить шаг</button>
+            <button type="button" id="add-step">Добавить шаг</button>
         </div>
 
-        <button type="submit">Отправить</button>
+        <button type="submit">Сохранить</button>
     </form>
 
     <script src="../js/script.js"></script>

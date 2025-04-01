@@ -1,23 +1,13 @@
 <?php
 /**
- * Вспомогательные функции для обработки данных формы
- */
-
-/**
- * Получает значение поля формы из POST или возвращает пустую строку
- * @param string $field Название поля
- * @return string
+ * Возвращает значение поля формы или пустую строку
  */
 function getFormValue($field) {
     return htmlspecialchars($_POST[$field] ?? '');
 }
 
 /**
- * Проверяет, выбрано ли значение в select
- * @param string $field Название поля
- * @param string $value Значение для проверки
- * @param bool $isArray Флаг множественного выбора
- * @return string
+ * Проверяет, выбрано ли значение в выпадающем списке
  */
 function isSelected($field, $value, $isArray = false) {
     if ($isArray) {

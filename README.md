@@ -1,121 +1,171 @@
-### Отчет по лабораторной работе №4: Обработка и валидация форм
+# Лабораторная работа №4. Обработка и валидация форм
 
-#### Инструкции по запуску проекта
-1. Установите PHP (если не установлен).
-2. Скачайте файлы проекта.
-3. Откройте проект в Visual Studio Code или другой IDE.
-4. Перейдите в директорию `public` через терминал с помощью команды:  
+## О проекте
+
+Проект "Система управления задачами" разработан в рамках лабораторной работы №4 "Обработка и валидация форм" для освоения работы с HTML-формами в PHP. Основная цель — изучить отправку данных на сервер, их фильтрацию, валидацию и сохранение, а также реализовать базовое веб-приложение, которое станет основой для дальнейшего развития в курсе веб-разработки.
+
+Проект позволяет добавлять задачи с различными параметрами (название, категория, описание, тэги, шаги выполнения), отображать две последние задачи на главной странице и просматривать полный список задач с пагинацией. Дополнительно реализована динамическая работа с шагами выполнения через JavaScript, что улучшает удобство использования.
+
+---
+
+## Инструкции по запуску проекта
+
+1. **Установите PHP**  
+   Убедитесь, что на вашем компьютере установлен PHP (рекомендуется версия 7.4 или выше). Скачать можно с [официального сайта](https://www.php.net/downloads).
+
+2. **Скачайте проект**  
+   Загрузите файлы проекта из репозитория или распакуйте архив в любую удобную директорию.
+
+3. **Откройте проект в IDE**  
+   Используйте любую среду разработки, например, Visual Studio Code, PhpStorm или другую.
+
+4. **Перейдите в директорию `public`**  
+   Откройте терминал и выполните команду:  
    ```
    cd public
    ```
-5. Запустите локальный сервер командой:  
+
+5. **Запустите локальный сервер**  
+   Выполните следующую команду для запуска встроенного сервера PHP:  
    ```
    php -S localhost:8080
    ```
-6. Откройте браузер и перейдите по адресу:  
+
+6. **Откройте приложение в браузере**  
+   Перейдите по адресу:  
    ```
    http://localhost:8080
    ```
 
-#### Описание лабораторной работы
-**Цель работы** – освоить основные принципы работы с HTML-формами в PHP, включая отправку данных на сервер, их фильтрацию, валидацию и сохранение. В рамках работы реализован проект "Система управления задачами", который позволяет добавлять задачи с различными параметрами, отображать последние задачи на главной странице и просматривать полный список задач с пагинацией. Также реализована динамическая работа с шагами выполнения задач с использованием JavaScript.
+---
 
-Проект стал основой для дальнейшего изучения разработки веб-приложений и был расширен дополнительными функциями для повышения удобства использования.
+## Структура проекта
 
-#### Краткая документация к проекту
-- **Файл `public/index.php`** – главная страница, отображающая две последние задачи из файла `storage/tasks.txt`.
-- **Файл `public/task/create.php`** – форма добавления задачи с полями для ввода данных, динамическим добавлением шагов выполнения через JavaScript и отображением ошибок валидации.
-- **Файл `public/task/index.php`** – страница со списком всех задач с реализованной пагинацией (по 5 задач на страницу).
-- **Файл `src/handlers/handle_task.php`** – обработчик формы, выполняющий фильтрацию, валидацию и сохранение данных.
-- **Файл `src/helpers.php`** – вспомогательные функции для работы с данными формы.
-- **Файл `storage/tasks.txt`** – текстовый файл для хранения задач в формате JSON.
-- **Файл `public/js/script.js`** – JavaScript-код для динамического добавления и удаления шагов в форме.
+```
+task-manager/
+├── public/                        
+│   ├── index.php                  # Главная страница (2 последние задачи)
+│   ├── js/                        
+│   │   └── script.js              # JavaScript для динамических шагов
+│   └── task/                    
+│       ├── create.php             # Форма добавления задачи
+│       └── index.php              # Список всех задач с пагинацией
+├── src/                            
+│   ├── handlers/                   
+│   │   └── handle_task.php        # Обработчик формы
+│   └── helpers.php                # Вспомогательные функции
+├── storage/                        
+│   └── tasks.txt                  # Файл для хранения задач (JSON)
+└── README.md                      # Документация проекта
+```
 
-#### Фрагменты кода, описание выполнения заданий
+### Описание файлов
+- **`public/index.php`**  
+  Главная страница, отображающая две последние задачи из файла `storage/tasks.txt`. Использует PHP для чтения данных и HTML для вывода.
 
-##### `public/task/create.php`
-Файл содержит HTML-форму для добавления задачи с динамическим управлением шагами выполнения. Основные элементы:
-- Поля формы:
-  - Название задачи (`<input type="text">`);
-  - Категория (`<select>` с вариантами: "работа", "личное", "срочное");
-  - Описание (`<textarea>`);
-  - Тэги (`<select multiple>` с вариантами: "важно", "быстро", "сложно");
-  - Шаги выполнения – динамически добавляемые поля (`<textarea>`) с помощью JavaScript. Пользователь может добавлять новые шаги кнопкой "Добавить шаг" и удалять их кнопкой "Убрать".
-- Обработка ошибок валидации: ошибки отображаются под соответствующими полями.
-- Навигация: ссылки на главную страницу, список задач и форму добавления.
+- **`public/task/create.php`**  
+  Форма добавления задачи с полями для ввода данных (название, категория, описание, тэги, шаги). Поддерживает динамическое добавление шагов через JavaScript и отображает ошибки валидации.
 
-Пример кода формы с динамическими шагами:
+- **`public/task/index.php`**  
+  Страница со списком всех задач. Реализована пагинация (5 задач на страницу) с навигацией по страницам.
+
+- **`src/handlers/handle_task.php`**  
+  Обработчик формы. Выполняет фильтрацию данных, их валидацию и сохранение в файл `storage/tasks.txt`.
+
+- **`src/helpers.php`**  
+  Содержит вспомогательные функции для работы с данными формы, такие как `getFormValue()` и `isSelected()`.
+
+- **`storage/tasks.txt`**  
+  Текстовый файл для хранения задач. Каждая строка — это JSON-объект, представляющий задачу.
+
+- **`public/js/script.js`**  
+  JavaScript-код для управления шагами выполнения: добавление новых шагов и удаление существующих.
+
+---
+
+## Функциональность и фрагменты кода
+
+### Добавление задачи (`public/task/create.php`)
+Форма позволяет пользователю ввести данные задачи и динамически добавлять шаги выполнения.
+
+#### Основные элементы формы:
+- **Поля ввода**:  
+  - Название задачи (`<input type="text">`).  
+  - Категория (`<select>` с вариантами: "работа", "личное", "срочное").  
+  - Описание (`<textarea>`).  
+  - Тэги (`<select multiple>` с вариантами: "важно", "быстро", "сложно").  
+  - Шаги выполнения — динамически добавляемые `<textarea>` через JavaScript.  
+- **Ошибки валидации**: Отображаются под соответствующими полями в случае некорректного ввода.  
+- **Навигация**: Ссылки на главную страницу, список задач и саму форму.
+
+#### Пример кода формы:
 ```php
 <div>
-    <label>Шаги выполнения:</label><br>
-    <div id="steps-container">
-        <?php
-        $steps = getFormValue('steps');
-        if ($steps) {
-            $steps_array = is_array($steps) ? $steps : explode("\n", $steps);
-            foreach ($steps_array as $index => $step) {
-                if (trim($step) !== '') {
-                    echo '<div class="step-container">';
-                    echo '<textarea name="steps[]" rows="2">' . htmlspecialchars(trim($step)) . '</textarea>';
-                    echo '<span class="remove-step">Убрать</span>';
-                    echo '</div>';
-                }
-            }
-        } else {
-            echo '<div class="step-container">';
-            echo '<textarea name="steps[]" rows="2"></textarea>';
-            echo '<span class="remove-step">Убрать</span>';
-            echo '</div>';
-        }
-        ?>
+    <label>Шаги:</label><br>
+    <div id="steps">
+        <div class="step">
+            <textarea name="steps[]" rows="2"></textarea>
+            <span class="remove-step">Удалить</span>
+        </div>
     </div>
-    <button type="button" id="add-step-btn">Добавить шаг</button>
+    <button type="button" id="add-step">Добавить шаг</button>
 </div>
 ```
 
-JavaScript-код для управления шагами (в файле `public/js/script.js`):
+#### JavaScript для динамических шагов (`public/js/script.js`):
 ```javascript
-document.getElementById('add-step-btn').addEventListener('click', function() {
-    const container = document.getElementById('steps-container');
-    const stepDiv = document.createElement('div');
-    stepDiv.className = 'step-container';
-    stepDiv.innerHTML = `
-        <textarea name="steps[]" rows="2"></textarea>
-        <span class="remove-step">Убрать</span>
-    `;
-    container.appendChild(stepDiv);
-});
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('add-step').addEventListener('click', function() {
+        const steps = document.getElementById('steps');
+        const newStep = document.createElement('div');
+        newStep.className = 'step';
+        newStep.innerHTML = `
+            <textarea name="steps[]" rows="2"></textarea>
+            <span class="remove-step">Удалить</span>
+        `;
+        steps.appendChild(newStep);
+        newStep.querySelector('.remove-step').addEventListener('click', removeStep);
+    });
 
-document.addEventListener('click', function(e) {
-    if (e.target.className === 'remove-step') {
-        e.target.parentElement.remove();
+    document.querySelectorAll('.remove-step').forEach(button => {
+        button.addEventListener('click', removeStep);
+    });
+
+    function removeStep(event) {
+        const steps = document.getElementById('steps');
+        if (steps.children.length > 1) {
+            event.target.parentElement.remove();
+        }
     }
 });
 ```
 
-##### `src/handlers/handle_task.php`
-Обработчик формы выполняет фильтрацию, валидацию и сохранение данных. Основные элементы:
-- Фильтрация данных с помощью `filter_input()` для защиты от XSS.
-- Валидация: проверка на пустые значения для полей "Название", "Категория" и "Описание".
-- Обработка массива шагов: шаги принимаются как массив (`steps[]`) и сохраняются в JSON.
-- Сохранение: данные записываются в файл `storage/tasks.txt` в формате JSON с добавлением метки времени.
+---
 
-Пример кода обработки:
+### Обработка данных формы (`src/handlers/handle_task.php`)
+Обработчик принимает данные из формы, фильтрует их, проверяет на корректность и сохраняет в файл.
+
+#### Основные этапы:
+- **Фильтрация**: Используется `filter_input()` для защиты от XSS-атак.  
+- **Валидация**: Проверка обязательных полей (название, категория, описание).  
+- **Сохранение**: Данные записываются в `storage/tasks.txt` в формате JSON.
+
+#### Пример кода:
 ```php
 $title = filter_input(INPUT_POST, 'title', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 $category = filter_input(INPUT_POST, 'category', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 $description = filter_input(INPUT_POST, 'description', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-$tags = filter_input(INPUT_POST, 'tags', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY) ?? [];
-$steps = filter_input(INPUT_POST, 'steps', FILTER_DEFAULT, FILTER_REQUIRE_ARRAY) ?? [];
+$tags = filter_input(INPUT_POST, 'tags', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY) ?? [];
+$steps = filter_input(INPUT_POST, 'steps', FILTER_SANITIZE_FULL_SPECIAL_CHARS, FILTER_REQUIRE_ARRAY) ?? [];
 
-if (empty($title)) {
-    $errors['title'] = 'Название задачи обязательно';
+if (!$title) {
+    $errors['title'] = 'Введите название задачи';
 }
-if (empty($category)) {
-    $errors['category'] = 'Категория обязательна';
+if (!$category) {
+    $errors['category'] = 'Выберите категорию';
 }
-if (empty($description)) {
-    $errors['description'] = 'Описание обязательно';
+if (!$description) {
+    $errors['description'] = 'Добавьте описание';
 }
 
 if (empty($errors)) {
@@ -124,104 +174,146 @@ if (empty($errors)) {
         'category' => $category,
         'description' => $description,
         'tags' => $tags,
-        'steps' => array_filter($steps, 'trim'), // Удаляем пустые шаги
+        'steps' => array_filter($steps), // Убираем пустые шаги
         'created_at' => date('Y-m-d H:i:s')
     ];
-    file_put_contents($tasksFile, json_encode($task) . PHP_EOL, FILE_APPEND | LOCK_EX);
-    header('Location: ../../index.php');
+    $tasksFile = __DIR__ . '/../../storage/tasks.txt';
+    file_put_contents($tasksFile, json_encode($task) . PHP_EOL, FILE_APPEND);
+    header('Location: ../index.php');
     exit;
 }
 ```
 
-##### `public/index.php`
-Отображает две последние задачи. Основные элементы:
-- Чтение данных из файла с помощью `file()`.
-- Декодирование JSON-строк в массив с помощью `array_map()`.
-- Вывод последних двух задач с использованием `array_slice()`.
+---
 
-Пример кода:
+### Главная страница (`public/index.php`)
+Отображает две последние задачи из файла `tasks.txt`.
+
+#### Основные элементы:
+- Чтение данных с помощью `file()`.  
+- Декодирование JSON в массив через `array_map()`.  
+- Выборка двух последних задач через `array_slice()`.
+
+#### Пример кода:
 ```php
-$tasks = file($tasksFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-$tasks = array_map(function($line) { return json_decode($line, true); }, $tasks);
+$tasksFile = __DIR__ . '/../storage/tasks.txt';
+$tasks = [];
+if (file_exists($tasksFile) && filesize($tasksFile) > 0) {
+    $tasks = file($tasksFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    $tasks = array_map('json_decode', $tasks);
+    $tasks = array_filter($tasks);
+}
 $latestTasks = array_slice($tasks, -2);
+
 foreach ($latestTasks as $task) {
-    echo "<h2>" . htmlspecialchars($task['title']) . "</h2>";
-    // Вывод других данных
+    echo "<h2>" . htmlspecialchars($task->title) . "</h2>";
+    echo "<p>Категория: " . htmlspecialchars($task->category) . "</p>";
+    echo "<p>" . htmlspecialchars($task->description) . "</p>";
+    echo "<p>Тэги: " . implode(', ', array_map('htmlspecialchars', $task->tags)) . "</p>";
+    // Вывод шагов
 }
 ```
 
-##### `public/task/index.php`
-Отображает все задачи с пагинацией. Основные элементы:
-- Чтение и декодирование данных аналогично `index.php`.
-- Реализация пагинации: 5 задач на страницу, с навигацией "Предыдущая", "Следующая" и номерами страниц.
-- Вывод задач в цикле `foreach` для текущей страницы.
+---
 
-Пример кода пагинации:
+### Список задач с пагинацией (`public/task/index.php`)
+Отображает все задачи с возможностью постраничного просмотра.
+
+#### Основные элементы:
+- **Пагинация**: 5 задач на страницу, навигация через ссылки "Назад", "Вперёд" и номера страниц.  
+- **Вывод**: Данные читаются из файла и отображаются для текущей страницы.
+
+#### Пример кода:
 ```php
+$tasksFile = __DIR__ . '/../../storage/tasks.txt';
+$tasks = [];
+if (file_exists($tasksFile) && filesize($tasksFile) > 0) {
+    $tasks = file($tasksFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    $tasks = array_map('json_decode', $tasks);
+    $tasks = array_filter($tasks);
+}
+
 $perPage = 5;
 $totalTasks = count($tasks);
 $totalPages = ceil($totalTasks / $perPage);
-$page = isset($_GET['page']) ? max(1, min((int)$_GET['page'], $totalPages)) : 1;
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$page = max(1, min($page, $totalPages));
 $start = ($page - 1) * $perPage;
 $currentTasks = array_slice($tasks, $start, $perPage);
 
 foreach ($currentTasks as $task) {
-    echo "<h2>" . htmlspecialchars($task['title'] ?? 'Без названия') . "</h2>";
+    echo "<h2>" . htmlspecialchars($task->title) . "</h2>";
     // Вывод других данных
 }
 
 if ($page > 1) {
-    echo "<a href='index.php?page=" . ($page - 1) . "'>Предыдущая</a> ";
+    echo "<a href='index.php?page=" . ($page - 1) . "'>Назад</a> ";
 }
 for ($i = 1; $i <= $totalPages; $i++) {
-    if ($i === $page) {
-        echo "<strong>$i</strong> ";
-    } else {
-        echo "<a href='index.php?page=$i'>$i</a> ";
-    }
+    echo $i == $page ? "<strong>$i</strong> " : "<a href='index.php?page=$i'>$i</a> ";
 }
 if ($page < $totalPages) {
-    echo "<a href='index.php?page=" . ($page + 1) . "'>Следующая</a>";
+    echo "<a href='index.php?page=" . ($page + 1) . "'>Вперёд</a>";
 }
 ```
 
-##### `src/helpers.php`
-Содержит вспомогательные функции:
-- `getFormValue()` – возвращает значение поля формы или пустую строку, поддерживает массивы.
-- `isSelected()` – проверяет, выбрано ли значение в `<select>`.
+---
 
-Пример кода:
+### Вспомогательные функции (`src/helpers.php`)
+Содержит функции для упрощения работы с формами.
+
+#### Пример кода:
 ```php
+/**
+ * Возвращает значение поля формы или пустую строку
+ */
 function getFormValue($field) {
-    if (isset($_POST[$field])) {
-        return is_array($_POST[$field]) ? $_POST[$field] : htmlspecialchars($_POST[$field]);
+    return htmlspecialchars($_POST[$field] ?? '');
+}
+
+/**
+ * Проверяет, выбрано ли значение в выпадающем списке
+ */
+function isSelected($field, $value, $isArray = false) {
+    if ($isArray) {
+        return in_array($value, $_POST[$field] ?? []) ? 'selected' : '';
     }
-    return '';
+    return ($_POST[$field] ?? '') === $value ? 'selected' : '';
 }
 ```
 
-#### Ответы на контрольные вопросы
+---
+
+## Ответы на контрольные вопросы
+
 1. **Какие методы HTTP применяются для отправки данных формы?**  
-   - `GET` – данные передаются в URL (подходит для простых запросов, например, поиска).  
-   - `POST` – данные отправляются в теле запроса (используется для форм с конфиденциальными данными или большими объемами информации). В проекте используется `POST`.
+   - `GET`: Данные передаются через URL (например, для поиска).  
+   - `POST`: Данные отправляются в теле запроса (используется в проекте для форм).  
 
 2. **Что такое валидация данных, и чем она отличается от фильтрации?**  
-   - **Валидация** – проверка данных на соответствие требованиям (например, поле не пустое).  
-   - **Фильтрация** – очистка данных от нежелательного содержимого (например, удаление тегов для защиты от XSS).  
-   В проекте фильтрация выполняется через `filter_input()`, а валидация – через проверки на пустые значения.
+   - **Валидация**: Проверка корректности данных (например, поле не пустое).  
+   - **Фильтрация**: Очистка данных от опасного содержимого (например, защита от XSS).  
+   В проекте: валидация — проверка на пустые поля, фильтрация — через `filter_input()`.
 
 3. **Какие функции PHP используются для фильтрации данных?**  
-   - `filter_input()` – фильтрует входные данные (используется в проекте).  
-   - `filter_var()` – фильтрует переменные.  
-   - `htmlspecialchars()` – преобразует специальные символы в HTML-сущности (используется для вывода).
+   - `filter_input()`: Фильтрация входных данных (применяется в обработчике).  
+   - `filter_var()`: Фильтрация переменных.  
+   - `htmlspecialchars()`: Экранирование для безопасного вывода (используется при отображении).
 
-#### Список использованных источников
-1. Официальная документация PHP: [https://www.php.net/manual/ru/](https://www.php.net/manual/ru/)
-2. Условие лабораторной работы на GitHub.
-3. Примеры кода из лекций.
-4. Документация MDN по JavaScript: [https://developer.mozilla.org/ru/docs/Web/JavaScript](https://developer.mozilla.org/ru/docs/Web/JavaScript)
+---
 
-#### Дополнительные важные аспекты
-- Реализована динамическая работа с шагами выполнения задач через JavaScript, что улучшает пользовательский опыт.
-- Добавлена пагинация на странице списка задач, что делает проект более удобным при большом количестве данных.
-- Код задокументирован с использованием PHPDoc для улучшения читаемости и поддержки другими разработчиками.
+## Использованные источники
+
+1. Официальная документация PHP: [https://www.php.net/manual/ru/](https://www.php.net/manual/ru/)  
+2. Условие лабораторной работы на GitHub.  
+3. Лекционные материалы курса.  
+4. Документация MDN по JavaScript: [https://developer.mozilla.org/ru/docs/Web/JavaScript](https://developer.mozilla.org/ru/docs/Web/JavaScript)  
+
+---
+
+## Дополнительные аспекты
+
+- **Динамические шаги**: Реализована возможность добавлять и удалять шаги выполнения через JavaScript, что делает интерфейс интерактивным.  
+- **Пагинация**: Удобный постраничный вывод задач улучшает навигацию при большом количестве записей.  
+- **Документация**: Код снабжён PHPDoc-комментариями для упрощения поддержки и понимания другими разработчиками.  
+- **Безопасность**: Применены фильтрация и экранирование данных для защиты от XSS-атак.

@@ -1,27 +1,25 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Добавление нового шага
-    document.getElementById('add-step-btn').addEventListener('click', function() {
-        const container = document.getElementById('steps-container');
-        const stepDiv = document.createElement('div');
-        stepDiv.className = 'step-container';
-        stepDiv.innerHTML = `
+    // Кнопка добавления шага
+    document.getElementById('add-step').addEventListener('click', function() {
+        const steps = document.getElementById('steps');
+        const newStep = document.createElement('div');
+        newStep.className = 'step';
+        newStep.innerHTML = `
             <textarea name="steps[]" rows="2"></textarea>
-            <span class="remove-step">Убрать</span>
+            <span class="remove-step">Удалить</span>
         `;
-        container.appendChild(stepDiv);
-        // Добавляем обработчик удаления для нового шага
-        stepDiv.querySelector('.remove-step').addEventListener('click', removeStep);
+        steps.appendChild(newStep);
+        newStep.querySelector('.remove-step').addEventListener('click', removeStep);
     });
 
-    // Добавление обработчиков удаления для существующих шагов
+    // Удаление шага
     document.querySelectorAll('.remove-step').forEach(button => {
         button.addEventListener('click', removeStep);
     });
 
-    // Функция удаления шага
     function removeStep(event) {
-        const container = document.getElementById('steps-container');
-        if (container.children.length > 1) {
+        const steps = document.getElementById('steps');
+        if (steps.children.length > 1) { // Не удаляем последний шаг
             event.target.parentElement.remove();
         }
     }
